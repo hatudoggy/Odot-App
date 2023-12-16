@@ -184,45 +184,43 @@ function RepoAddModal() {
   )
 }
 
-type LabeledInputType = "line" | "area" | "select" | "multiple"
+type LabeledInputProps = LabeledInputText | LabeledInputSelect | LabeledInputMultiple
 
-
-type LabeledInputProps<T extends LabeledInputType> = {
+interface LabeledInputBase {
   name?: string
   icon?: ReactNode
-  type: T
   label: string
   placeholder?: string
   className?: string
+}
 
-} & 
-  (T extends "line" | "area"
-  ? {
-      value?: string 
-    }
-  :
-  T extends "select"
-  ? {
-      options: SelectOption[]
-      onChange: (selected: SingleValue<SelectOption> | null) => void
-      onCreateOption?: (createdOption: string) => void
-      value?: SelectOption 
-      defaultValue?: SelectOption
-    }
-  : T extends "multiple"
-  ? {
-      options: SelectOption[];
-      onChange: (selected: MultiValue<SelectOption> | null) => void
-      onCreateOption?: (createdOption: string) => void
-      value?: SelectOption[]
-      defaultValue?: SelectOption[]
-    }
-  : {});
+interface LabeledInputText extends LabeledInputBase{
+  type: 'line' | 'area'
+  value?: string
+}
 
-export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProps<T>) {
+interface LabeledInputSelect extends LabeledInputBase{
+  type: 'select'
+  options: SelectOption[]
+  onChange: (selected: SingleValue<SelectOption> | null) => void
+  onCreateOption?: (createdOption: string) => void
+  value?: SelectOption 
+  defaultValue?: SelectOption
+}
 
-  const handleType = (type: LabeledInputType) => {
-    switch(type){
+interface LabeledInputMultiple extends LabeledInputBase{
+  type: 'multiple'
+  options: SelectOption[];
+  onChange: (selected: MultiValue<SelectOption> | null) => void
+  onCreateOption?: (createdOption: string) => void
+  value?: SelectOption[]
+  defaultValue?: SelectOption[]
+}
+
+export function LabeledInput(props: LabeledInputProps) {
+
+  const handleType = (props: LabeledInputProps) => {
+    switch(props.type){
       case "line":
         return(
           <InlineTextInput
@@ -230,7 +228,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             type="text"
             className={`${props.className}`}
             placeholder={props.placeholder}
-            defaultValue={(props as LabeledInputProps<'line'>).value}
+            defaultValue={props.value}
           />
         )
       case "area":
@@ -240,7 +238,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             className={`${props.className}`}
             placeholder={props.placeholder}
             rows={3}
-            defaultValue={(props as LabeledInputProps<'area'>).value}
+            defaultValue={props.value}
           />
         )
       case "select":
@@ -250,11 +248,11 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             className={`${props.className}`}
             isMulti={false}
             placeholder=""
-            options={(props as LabeledInputProps<'select'>).options}
-            onChange={(props as LabeledInputProps<'select'>).onChange}
-            onCreateOption={(props as LabeledInputProps<'select'>).onCreateOption}
-            value={(props as LabeledInputProps<'select'>).value}
-            defaultValue={(props as LabeledInputProps<'select'>).defaultValue}
+            options={props.options}
+            onChange={props.onChange}
+            onCreateOption={props.onCreateOption}
+            value={props.value}
+            defaultValue={props.defaultValue}
           />
         )
       case "multiple":
@@ -264,11 +262,11 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             className={`${props.className}`}
             isMulti
             placeholder=""
-            options={(props as LabeledInputProps<'multiple'>).options}
-            onChange={(props as LabeledInputProps<'multiple'>).onChange}
-            onCreateOption={(props as LabeledInputProps<'multiple'>).onCreateOption}
-            value={(props as LabeledInputProps<'multiple'>).value}
-            defaultValue={(props as LabeledInputProps<'multiple'>).defaultValue}
+            options={props.options}
+            onChange={props.onChange}
+            onCreateOption={props.onCreateOption}
+            value={props.value}
+            defaultValue={props.defaultValue}
           />
         )
     }
@@ -284,7 +282,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
         <span>{props.icon}</span>{props.label}
       </label>
       {
-        handleType(props.type)
+        handleType(props)
       }
 
     </div>

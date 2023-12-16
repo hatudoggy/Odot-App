@@ -114,66 +114,42 @@ function Repo() {
         className="fixed top-0 left-0 w-full h-[6.3rem] bg-[#242424]"
       ></div>
       <ActionBar />
-      {/* <div
-        className="flex flex-wrap gap-4 margin-auto w-fit overflow-y-scroll"
-      >
-        {
-          repoItems && repoMedias && repoTags &&
-            repoItems.map((item, index)=>
-              <RepoCard 
-                key={index} 
-                item={item} 
-                media={
-                  repoMedias.find((media)=>
-                    media.id === item.media
-                  )
-                }
-                tags={item.tags.map((tag) => 
-                  {
-                    const repoTag = repoTags.find((repoTag)=>repoTag.id === tag)
-                    if(repoTag)
-                      return{
-                        id: repoTag.id,
-                        label: repoTag.label,
-                        color: repoTag.color
-                      }
-                  })}
-              />
-            )
-        }
-      </div> */}
-      <ResponsiveMasonry
-        columnsCountBreakPoints={{ 300: 1, 620: 2, 950: 3, 1290: 4, 1640: 5, 2000: 6 }}
-      >
-        <Masonry 
-          gutter='1rem'
+      {
+        repoItems && repoMedias && repoTags &&
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 300: 1, 620: 2, 950: 3, 1290: 4, 1640: 5, 2000: 6 }}
         >
-          {
-            repoItems && repoMedias && repoTags &&
-            repoItems.map((item, index)=>
-              <RepoCard 
-                key={index} 
-                item={item} 
-                media={
-                  repoMedias.find((media)=>
-                    media.id === item.media
-                  )
-                }
-                tags={item.tags.map((tag) => 
-                  {
-                    const repoTag = repoTags.find((repoTag)=>repoTag.id === tag)
-                    if(repoTag)
-                      return{
-                        id: repoTag.id,
-                        label: repoTag.label,
-                        color: repoTag.color
-                      }
-                  })}
-              />
-            )
-          }
-        </Masonry>
-      </ResponsiveMasonry>
+          <Masonry 
+            gutter='1rem'
+          >
+            {
+              
+              repoItems.map((item, index)=>
+                <RepoCard 
+                  key={index} 
+                  item={item} 
+                  media={
+                    repoMedias.find((media)=>
+                      media.id === item.media
+                    )
+                  }
+                  tags={item.tags.map((tag) => 
+                    {
+                      const repoTag = repoTags.find((repoTag)=>repoTag.id === tag)
+                      if(repoTag)
+                        return{
+                          id: repoTag.id,
+                          label: repoTag.label,
+                          color: repoTag.color
+                        }
+                    })}
+                />
+              )
+            }
+          </Masonry>
+        </ResponsiveMasonry>
+      }
+
     </div>
 
   )
