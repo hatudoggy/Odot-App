@@ -25,7 +25,7 @@ function Notes() {
       <ActionBar />
 
       <ResponsiveMasonry
-        columnsCountBreakPoints={{300: 1, 620: 2, 950: 3 }}
+        columnsCountBreakPoints={{ 300: 1, 620: 2, 950: 3, 1290: 4, 1640: 5, 2000: 6 }}
       >
         <Masonry 
           gutter='1.3rem'

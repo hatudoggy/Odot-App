@@ -205,15 +205,17 @@ type LabeledInputProps<T extends LabeledInputType> = {
   ? {
       options: SelectOption[]
       onChange: (selected: SingleValue<SelectOption> | null) => void
-      onCreateOption: (createdOption: string) => void
+      onCreateOption?: (createdOption: string) => void
       value?: SelectOption 
+      defaultValue?: SelectOption
     }
   : T extends "multiple"
   ? {
       options: SelectOption[];
       onChange: (selected: MultiValue<SelectOption> | null) => void
-      onCreateOption: (createdOption: string) => void
+      onCreateOption?: (createdOption: string) => void
       value?: SelectOption[]
+      defaultValue?: SelectOption[]
     }
   : {});
 
@@ -252,6 +254,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             onChange={(props as LabeledInputProps<'select'>).onChange}
             onCreateOption={(props as LabeledInputProps<'select'>).onCreateOption}
             value={(props as LabeledInputProps<'select'>).value}
+            defaultValue={(props as LabeledInputProps<'select'>).defaultValue}
           />
         )
       case "multiple":
@@ -265,6 +268,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             onChange={(props as LabeledInputProps<'multiple'>).onChange}
             onCreateOption={(props as LabeledInputProps<'multiple'>).onCreateOption}
             value={(props as LabeledInputProps<'multiple'>).value}
+            defaultValue={(props as LabeledInputProps<'multiple'>).defaultValue}
           />
         )
     }

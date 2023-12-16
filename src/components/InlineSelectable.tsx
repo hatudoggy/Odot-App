@@ -18,7 +18,7 @@ interface InlineSelectableProps<OptionType extends SelectOption, IsMulti extends
   placeholder?: string
   options: OptionType[]
   onChange: ((newValue: OnChangeValue<OptionType, IsMulti>) => void) | undefined
-  onCreateOption: (createdOption: string) => void | undefined
+  onCreateOption?: (createdOption: string) => void | undefined
   value?: OptionType | OptionType[]
   defaultValue?: OptionType | OptionType[]
 }
