@@ -25,6 +25,7 @@ import Label from "../components/Label";
 import { MultiValue, SingleValue } from "react-select"
 import Selectable from "../components/Selectable";
 import MultiSelectable from "../components/MultiSelectable";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 
 //HeadlessUI
 import { Popover, Tab } from '@headlessui/react'
@@ -39,14 +40,13 @@ import { Collection, IndexableType } from "dexie";
 
 //CSS
 import '../App.css'
-import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 
 
 function Repo() {
   
   const { searchValue, sortValue, filterValue } = useSelector((state: RootState) => state.repo)
   const dispatch = useDispatch()
-
+  
   const handleSorting = (sortType: string, order: string, item: Collection<RepoItem, IndexableType>) => {
     let unsortedItem
     if(order === 'desc'){
