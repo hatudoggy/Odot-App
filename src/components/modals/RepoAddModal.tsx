@@ -50,10 +50,10 @@ function RepoAddModal() {
   )
 
 
-  const [repoMedia, setRepoMedia] = useState<SingleValue<SelectOption>>(null)
-  const [repoTags, setRepoTags] = useState<MultiValue<SelectOption> | null>(null)
+  const [repoMedia, setRepoMedia] = useState<SelectOption>({value: '', label: ''})
+  const [repoTags, setRepoTags] = useState<SelectOption[]>([])
 
-  function handleFormSubmission(event: FormEvent<HTMLFormElement>) {
+  const handleFormSubmission = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
@@ -77,6 +77,42 @@ function RepoAddModal() {
     dispatch(closeModal())
   }
   
+  const handleCreateNewMediaOption = (newMedia: string) => {
+    db.repoMedia.add({
+      label: newMedia,
+      icon: 'none'
+    }).then(async (e)=>{
+      const newMedia = await db.repoMedia.get(e)
+      console.log("E dog", e)
+      console.log("NewMedia dog", newMedia)
+      if(newMedia && newMedia.id){
+        setRepoMedia({
+          value: newMedia.id.toString(),
+          label: newMedia.label,
+          icon: newMedia.icon
+        })
+      }
+    })
+  }
+
+  const handleCreateNewTagOption = (newTag: string) => {
+    db.repoTag.add({
+      label: newTag,
+      color: '#3b3b3b'
+    }).then(async (e)=>{
+      const newTag = await db.repoTag.get(e)
+      if(newTag && newTag.id){
+        setRepoTags([
+          ...repoTags,
+          {
+            value: newTag.id.toString(),
+            label: newTag.label,
+            color: newTag.color
+          }
+        ])
+      }
+    })
+  }
 
   return(
     <div
@@ -102,7 +138,9 @@ function RepoAddModal() {
                 label: media.label,
                 icon: media.icon
               })) || []} 
-              onChange={(e)=>setRepoMedia(e)}
+              value={repoMedia}
+              onChange={(e)=> e && setRepoMedia(e)}
+              onCreateOption={handleCreateNewMediaOption}
             />
             <LabeledInput 
               className="text-lg"
@@ -115,7 +153,9 @@ function RepoAddModal() {
                 label: tag.label,
                 color: tag.color
               })) || []}
-              onChange={(e)=>setRepoTags(e)}
+              value={repoTags}
+              onChange={(e)=> e && setRepoTags([...e])}
+              onCreateOption={handleCreateNewTagOption}
             />
           </div>
           <LabeledInput name="repoDescription" icon={<PiTextAlignJustifyBold />} type="area" label="Description" />
@@ -144,41 +184,43 @@ function RepoAddModal() {
   )
 }
 
-type LabeledInputType = "line" | "area" | "select" | "multiple"
+type LabeledInputProps = LabeledInputText | LabeledInputSelect | LabeledInputMultiple
 
-
-type LabeledInputProps<T extends LabeledInputType> = {
+interface LabeledInputBase {
   name?: string
   icon?: ReactNode
-  type: T
   label: string
   placeholder?: string
   className?: string
+}
 
-} & 
-  (T extends "line" | "area"
-  ? {
-      value?: string 
-    }
-  :
-  T extends "select"
-  ? {
-      options: SelectOption[]
-      onChange: (selected: SingleValue<SelectOption> | null) => void
-      value?: SelectOption 
-    }
-  : T extends "multiple"
-  ? {
-      options: SelectOption[];
-      onChange: (selected: MultiValue<SelectOption> | null) => void
-      value?: SelectOption[]
-    }
-  : {});
+interface LabeledInputText extends LabeledInputBase{
+  type: 'line' | 'area'
+  value?: string
+}
 
-export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProps<T>) {
+interface LabeledInputSelect extends LabeledInputBase{
+  type: 'select'
+  options: SelectOption[]
+  onChange: (selected: SingleValue<SelectOption> | null) => void
+  onCreateOption?: (createdOption: string) => void
+  value?: SelectOption 
+  defaultValue?: SelectOption
+}
 
-  const handleType = (type: LabeledInputType) => {
-    switch(type){
+interface LabeledInputMultiple extends LabeledInputBase{
+  type: 'multiple'
+  options: SelectOption[];
+  onChange: (selected: MultiValue<SelectOption> | null) => void
+  onCreateOption?: (createdOption: string) => void
+  value?: SelectOption[]
+  defaultValue?: SelectOption[]
+}
+
+export function LabeledInput(props: LabeledInputProps) {
+
+  const handleType = (props: LabeledInputProps) => {
+    switch(props.type){
       case "line":
         return(
           <InlineTextInput
@@ -186,7 +228,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             type="text"
             className={`${props.className}`}
             placeholder={props.placeholder}
-            defaultValue={(props as LabeledInputProps<'line'>).value}
+            defaultValue={props.value}
           />
         )
       case "area":
@@ -196,7 +238,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             className={`${props.className}`}
             placeholder={props.placeholder}
             rows={3}
-            defaultValue={(props as LabeledInputProps<'area'>).value}
+            defaultValue={props.value}
           />
         )
       case "select":
@@ -206,9 +248,11 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             className={`${props.className}`}
             isMulti={false}
             placeholder=""
-            options={(props as LabeledInputProps<'select'>).options}
-            onChange={(props as LabeledInputProps<'select'>).onChange}
-            value={(props as LabeledInputProps<'select'>).value}
+            options={props.options}
+            onChange={props.onChange}
+            onCreateOption={props.onCreateOption}
+            value={props.value}
+            defaultValue={props.defaultValue}
           />
         )
       case "multiple":
@@ -218,9 +262,11 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
             className={`${props.className}`}
             isMulti
             placeholder=""
-            options={(props as LabeledInputProps<'multiple'>).options}
-            onChange={(props as LabeledInputProps<'multiple'>).onChange}
-            value={(props as LabeledInputProps<'multiple'>).value}
+            options={props.options}
+            onChange={props.onChange}
+            onCreateOption={props.onCreateOption}
+            value={props.value}
+            defaultValue={props.defaultValue}
           />
         )
     }
@@ -236,7 +282,7 @@ export function LabeledInput<T extends LabeledInputType>(props: LabeledInputProp
         <span>{props.icon}</span>{props.label}
       </label>
       {
-        handleType(props.type)
+        handleType(props)
       }
 
     </div>

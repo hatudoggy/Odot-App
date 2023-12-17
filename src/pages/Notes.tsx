@@ -1,16 +1,34 @@
 //Libraries
-import type { RootState } from '../app/store'
-import { useSelector, useDispatch } from 'react-redux'
-import { addNote } from '../features/notes/notesSlice'
+import { MDXEditor } from '@mdxeditor/editor/MDXEditor'
+import { listsPlugin } from '@mdxeditor/editor/plugins/lists'
+import { markdownShortcutPlugin, MDXEditorMethods } from '@mdxeditor/editor'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import TextareaAutosize from 'react-textarea-autosize'
-//import { useEffect, useRef, useState } from 'react'
+import { useDebounce } from "@uidotdev/usehooks";
+import { useEffect, useRef, useState } from 'react'
+
+//Icons
+import { IoClose } from 'react-icons/io5'
+
+//Components
+import TextareaAutosize from 'react-textarea-autosize';
 
 //Types
-import { NoteContent, NoteItem, NoteType } from '../interface/INotes'
+import { useLiveQuery } from 'dexie-react-hooks'
+
+//DB
+import { db, NoteItem} from '../localdb/db'
+
+//Styles
+import '@mdxeditor/editor/style.css'
+import './Notes/notes-style.css'
 
 function Notes() {
-  const notesList = useSelector((state: RootState) => state.notes.noteList)
+
+  const noteItems = useLiveQuery(
+    () => db.notes.toArray()
+  )
+
+  //console.log(noteItems)
 
   return (
     <div
@@ -24,24 +42,26 @@ function Notes() {
       
       <ActionBar />
 
-      <ResponsiveMasonry
-        columnsCountBreakPoints={{300: 1, 620: 2, 950: 3 }}
-      >
-        <Masonry 
-          gutter='1.3rem'
-        >
-          {
-            notesList.map((note, noteIndex)=>
-              <NoteCard
-                key={noteIndex}
-                title={note.title}
-                content={note.content}
-                type={note.type}
-              />
-            )
-          }
-        </Masonry>
-      </ResponsiveMasonry>
+      {
+        noteItems && 
+          <ResponsiveMasonry
+            columnsCountBreakPoints={{ 300: 1, 620: 2, 950: 3, 1290: 4, 1640: 5, 2000: 6 }}
+          >
+            <Masonry 
+              gutter='1.3rem'
+            >
+              {
+                noteItems.map((note, noteIndex)=>
+                  <NoteCard
+                    key={noteIndex}
+                    item={note}
+                  />
+                )
+              }
+            </Masonry>
+          </ResponsiveMasonry>
+      }
+
 
     </div>
   )
@@ -49,13 +69,22 @@ function Notes() {
 
 
 function ActionBar(){
-  const dispatch = useDispatch()
+  
+  const handleAddTextNote = () => {
+    db.notes.add({
+      title: 'New Note',
+      content: '',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+  }
+
 
   return(
     <div>
       <button
         className="p-2 px-4 bg-slate-600 rounded"
-        onClick={()=>dispatch(addNote())}
+        onClick={handleAddTextNote}
       >
         Add Note +
       </button>
@@ -63,89 +92,64 @@ function ActionBar(){
   )
 }
 
-function NoteCard({
-  title,
-  content,
-  type,
-}:NoteItem){
+function NoteCard({ item }: { item: NoteItem}){
 
-  const noteTypeRenderer = (noteType: NoteType, content: NoteContent) => {
-    switch(noteType){
-      case 'text':
-        if(typeof content === 'string'){
-          return (
-            <TextareaAutosize
-              className='bg-transparent resize-none focus:outline-none'
-              spellCheck='false'
-              defaultValue={content}
-            />
-          )
-        }
-      break
+  const handleEditTitle = (newTitle: string) => {
+    db.notes.update(item, {
+      title: newTitle
+    })
+  }
 
-      case 'checklist':
-        if(Array.isArray(content)){  
-          return (
-            <div
-              className='flex flex-col gap-1'
-            >
-              {
-                content.map((checkItem, checkIndex)=>
-                  <div
-                    key={checkIndex}
-                    className='flex gap-2 items-start'
-                  >
-                    <input
-                      type='checkbox'
-                      className='flex-none mt-2'
-                      //checked={checkItem.checked}
-                    />
-                    <p
-                      className='flex-1 w-11/12 break-words'
-                    >
-                      {checkItem.label}
-                    </p>
-                  </div>
-                )
-              }
-            </div>
-          )
-        }
-      break
+  const handleEditContent = (newContent: string) => {
+    //let newContent = editorRef.current?.getMarkdown()
+    db.notes.update(item, {
+      content: newContent
+    })
+  }
 
-      case 'photo':
-        if(typeof content === 'string'){
-          return (
-            <TextareaAutosize
-              className='bg-transparent resize-none focus:outline-none'
-              spellCheck='false'
-              defaultValue={content}
-            />
-          )
-        }
-      break
-
-      default:
-        return null
-
+  const handleDeleteNote = () => {
+    if(item.id){
+      db.notes.delete(item.id)
     }
   }
 
+  const [noteContent, setNoteContent] = useState(item.content);
+  const debouncedContent = useDebounce(noteContent, 300)
 
+  const editorRef = useRef<MDXEditorMethods>(null)
+
+  useEffect(()=>{
+    if(debouncedContent){
+      handleEditContent(debouncedContent)
+    }
+  }, [debouncedContent])
+  
   return(
     <div
-      className="min-h-[6rem] max-h-[25rem] p-4 pt-3 flex flex-col bg-neutral-800 border border-neutral-400 rounded-lg overflow-hidden"
+      className="relative min-h-[12rem] max-h-[25rem] p-4 pt-3 flex flex-col bg-neutral-800 border border-neutral-400 rounded-lg group"
     >
-      {
-        title !== '' &&
-          <h3
-            className="mb-2 text-lg font- font-semibold"
-          >
-            { title }
-          </h3>
-      }
+      <button
+        className='absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 p-1.5 bg-neutral-600 shadow-lg rounded-full transition-all invisible opacity-0 hover:bg-neutral-500 group-hover:visible group-hover:opacity-100'
+        onClick={handleDeleteNote}
+      >
+        <IoClose className='text-lg' />
+      </button>
+      <TextareaAutosize 
+        className='mx-2 text-lg font- font-semibold bg-transparent resize-none focus:outline-none'
+        defaultValue={item.title}
+        onBlur={(e)=>handleEditTitle(e.target.value)}
+        maxLength={20}
+        spellCheck={false}
+      />
 
-      { noteTypeRenderer(type, content) }
+      <MDXEditor 
+        ref={editorRef}
+        className='dark-theme' 
+        markdown={noteContent}
+        plugins={[listsPlugin(), markdownShortcutPlugin()]} 
+        onChange={(e)=>setNoteContent(e)}
+        contentEditableClassName='checklist'
+      />
 
       <div>
         
@@ -153,5 +157,7 @@ function NoteCard({
     </div>
   )
 }
+
+
   
 export default Notes

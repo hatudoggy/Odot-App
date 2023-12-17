@@ -25,6 +25,8 @@ import Label from "../components/Label";
 import { MultiValue, SingleValue } from "react-select"
 import Selectable from "../components/Selectable";
 import MultiSelectable from "../components/MultiSelectable";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 //HeadlessUI
 import { Popover, Tab } from '@headlessui/react'
@@ -39,14 +41,13 @@ import { Collection, IndexableType } from "dexie";
 
 //CSS
 import '../App.css'
-import { Tooltip, TooltipContent, TooltipTrigger } from "../components/Tooltip";
 
 
 function Repo() {
   
   const { searchValue, sortValue, filterValue } = useSelector((state: RootState) => state.repo)
   const dispatch = useDispatch()
-
+  
   const handleSorting = (sortType: string, order: string, item: Collection<RepoItem, IndexableType>) => {
     let unsortedItem
     if(order === 'desc'){
@@ -113,34 +114,42 @@ function Repo() {
         className="fixed top-0 left-0 w-full h-[6.3rem] bg-[#242424]"
       ></div>
       <ActionBar />
-      <div
-        className="flex flex-wrap gap-4 margin-auto w-fit overflow-y-scroll"
-      >
-        {
-          repoItems && repoMedias && repoTags &&
-            repoItems.map((item, index)=>
-              <RepoCard 
-                key={index} 
-                item={item} 
-                media={
-                  repoMedias.find((media)=>
-                    media.id === item.media
-                  )
-                }
-                tags={item.tags.map((tag) => 
-                  {
-                    const repoTag = repoTags.find((repoTag)=>repoTag.id === tag)
-                    if(repoTag)
-                      return{
-                        id: repoTag.id,
-                        label: repoTag.label,
-                        color: repoTag.color
-                      }
-                  })}
-              />
-            )
-        }
-      </div>
+      {
+        repoItems && repoMedias && repoTags &&
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 300: 1, 620: 2, 950: 3, 1290: 4, 1640: 5, 2000: 6 }}
+        >
+          <Masonry 
+            gutter='1rem'
+          >
+            {
+              
+              repoItems.map((item, index)=>
+                <RepoCard 
+                  key={index} 
+                  item={item} 
+                  media={
+                    repoMedias.find((media)=>
+                      media.id === item.media
+                    )
+                  }
+                  tags={item.tags.map((tag) => 
+                    {
+                      const repoTag = repoTags.find((repoTag)=>repoTag.id === tag)
+                      if(repoTag)
+                        return{
+                          id: repoTag.id,
+                          label: repoTag.label,
+                          color: repoTag.color
+                        }
+                    })}
+                />
+              )
+            }
+          </Masonry>
+        </ResponsiveMasonry>
+      }
+
     </div>
 
   )
@@ -159,7 +168,7 @@ function RepoCard({item, media, tags}:{ item: RepoItem, media: RepoMedia | undef
   return(
     
       <div
-        className="w-64 bg-zinc-800 border-2 border-opacity-10 border-zinc-600 rounded-md text-left overflow-hidden  hover:bg-zinc-700 transition-colors"
+        className="bg-zinc-800 border-2 border-opacity-10 border-zinc-600 rounded-md text-left overflow-hidden  hover:bg-zinc-700 transition-colors"
       >
         <div
           className="relative w-full h-16"

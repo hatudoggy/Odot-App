@@ -1,0 +1,17 @@
+
+.checklist li {
+  display: flex;
+
+}
+
+.checklist li::before {
+  transform: translateY(25%);
+  --accentSolid: rgb(64, 146, 184);
+  --accentBorder: rgb(70, 147, 150);
+}
+
+.checklist li::after {
+  transform: translateY(60%) rotate(45deg) ;
+  --baseBase: white;
+
+}

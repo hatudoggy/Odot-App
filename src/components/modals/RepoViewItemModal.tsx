@@ -162,7 +162,7 @@ function RepoViewItemModal({item}: {item: RepoViewItemProps}) {
               </p>
             </>
             :
-            repoMedia && repoTags &&
+             
               <EditModeForm item={repoItem} media={repoMedia} tags={repoTags} setIsEditMode={setIsEditMode}/>
           )
         }
@@ -176,8 +176,8 @@ function RepoViewItemModal({item}: {item: RepoViewItemProps}) {
 
 interface EditModeFormProps {
   item: RepoItem
-  media: RepoMedia
-  tags: RepoTag[]
+  media?: RepoMedia
+  tags?: RepoTag[]
   setIsEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -198,17 +198,17 @@ function EditModeForm({item, media, tags, setIsEditMode}: EditModeFormProps) {
   )
 
 
-  const [repoMedia, setRepoMedia] = useState<SingleValue<SelectOption>>({
-    value: media.id?.toString() || '',
-    label: media.label || ''
+  const [repoMedia, setRepoMedia] = useState<SelectOption>({
+    value: media?.id?.toString() || '',
+    label: media?.label || ''
   })
 
 
-  const [repoTags, setRepoTags] = useState<MultiValue<SelectOption> | null>(
+  const [repoTags, setRepoTags] = useState<SelectOption[]>(
     tags?.map((tag)=>({
-    value: tag.id?.toString() || '',
-    label: tag.label || ''
-  })))
+    value: tag?.id?.toString() || '',
+    label: tag?.label || ''
+  })) || [])
 
   const handleEditRepo = (repoItem: RepoItemEdit) => {
     db.repo.update(item, {
@@ -258,10 +258,11 @@ function EditModeForm({item, media, tags, setIsEditMode}: EditModeFormProps) {
             label: media.label,
             icon: media.icon
           })) || []} 
-          onChange={(e)=>setRepoMedia(e)}
-          value={{
-            value: media.id?.toString() || '',
-            label: media?.label || ''
+          onChange={(e)=> e && setRepoMedia(e)}
+          defaultValue={{
+            value: media?.id?.toString() || '',
+            label: media?.label || '',
+            icon: media?.icon
           }}
         />
         <LabeledInput 
@@ -273,10 +274,11 @@ function EditModeForm({item, media, tags, setIsEditMode}: EditModeFormProps) {
             label: tag.label,
             color: tag.color
           })) || []}
-          onChange={(e)=>setRepoTags(e)}
-          value={tags.map((tag)=>({
+          onChange={(e)=> e && setRepoTags([...e])}
+          defaultValue={tags?.map((tag)=>({
             value: tag.id?.toString() || '',
-            label: tag.label || ''
+            label: tag.label || '',
+            color: tag.color
           }))}
         />
 
