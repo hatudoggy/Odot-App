@@ -9,16 +9,8 @@ export interface NavState {
 
 const initialState: NavState = {
   noteList: [
-    { title: '', noteType: 'text', content: 'awfaw' },
-    { title: 'Test Title', noteType: 'text' , content: 'dog' },
-    { 
-      title: 'Test Checklist', 
-      noteType: 'checklist',
-      content: [
-        {checked: false, text: 'hatdogawgawgawgggggggggggggggggg awgawgawga'},
-        {checked: false, text: 'patdog'},
-      ]
-    },
+    { title: '', content: 'awfaw' },
+    { title: 'Test Title' , content: 'dog' },
   ]
 }
 
@@ -30,7 +22,6 @@ export const navigationSlice = createSlice({
       state.noteList.push({
         title: '',
         content: '',
-        noteType: 'text',
       })
   }
   }
