@@ -34,6 +34,16 @@ export interface RepoTag {
   color?: string
 }
 
+export interface GPTSettings {
+  apiKey: string
+}
+
+export interface GPTItem {
+  id?: number
+  label: string
+  chat: string
+}
+
 export class SubClassedDexie extends Dexie {
   notes!: Table<NoteItem>
   repo!: Table<RepoItem>

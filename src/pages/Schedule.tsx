@@ -9,7 +9,7 @@ function Schedule() {
 
   return (
     <div
-      className="flex flex-col"
+      className=" px-12 py-10 flex flex-col"
     >
       <Tabs />
       <TabContainer />

@@ -8,6 +8,7 @@ import { AiFillCalendar } from 'react-icons/ai'
 import { FaNoteSticky } from 'react-icons/fa6'
 import { FaExternalLinkSquareAlt } from 'react-icons/fa'
 import { IoMdSettings } from "react-icons/io";
+import { RiOpenaiFill } from "react-icons/ri";
 
 function Sidebar() {
   const navigation = useSelector((state: RootState) => state.navigation.navigations)
@@ -43,6 +44,8 @@ function SidebarButton({nav}: { nav: NavItem }) {
         return <FaNoteSticky/>
       case 'links':
         return <FaExternalLinkSquareAlt/>
+      case 'gpt':
+        return <RiOpenaiFill/>
       case 'settings':
         return <IoMdSettings />
     }

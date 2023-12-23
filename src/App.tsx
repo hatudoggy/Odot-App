@@ -11,6 +11,7 @@ import Repo from './pages/Repo'
 import Notes from './pages/Notes'
 import Schedule from './pages/Schedule'
 import Settings from './pages/Settings'
+import Gpt from './pages/Gpt'
 
 
 
@@ -25,6 +26,8 @@ function App() {
         return <Notes />
       case 'links':
         return <Repo />
+      case 'gpt':
+        return <Gpt />
       case 'settings':
         return <Settings />
     }
@@ -38,7 +41,7 @@ function App() {
       >
         <Sidebar/>
         <div
-          className='relative px-12 py-10 flex-1 min-h-screen'
+          className='relative flex-1 min-h-screen'
         >
           { changePage(currentNav) }
         </div>

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
 
-export type NavComponent = 'sched' | 'notes' | 'links' | 'settings'
+export type NavComponent = 'sched' | 'notes' | 'links' | 'gpt' | 'settings'
 
 export interface NavItem {
   key: NavComponent
@@ -20,6 +20,7 @@ const initialState: NavState = {
     {key: 'sched', label: 'Schedule'},
     {key: 'notes', label: 'Notes'},
     {key: 'links', label: 'Links'},
+    {key: 'gpt', label: 'GPT'},
   ]
 }
 

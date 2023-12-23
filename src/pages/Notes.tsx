@@ -32,7 +32,7 @@ function Notes() {
 
   return (
     <div
-      className="flex flex-col gap-3"
+      className=" px-12 py-10 flex flex-col gap-3"
     >
       <h1
         className="text-2xl font-semibold"

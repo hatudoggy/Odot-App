@@ -107,7 +107,7 @@ function Repo() {
   
   return (
     <div
-      className="flex-1 flex flex-col gap-8"
+      className=" px-12 py-10 flex-1 flex flex-col gap-8"
     >
       
       <div
