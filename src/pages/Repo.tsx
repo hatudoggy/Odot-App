@@ -111,7 +111,7 @@ function Repo() {
     >
       
       <div
-        className="fixed top-0 left-0 w-full h-[6.3rem] bg-[#242424]"
+        className="z-10 fixed top-0 left-0 w-full h-[6.3rem] bg-[#242424]"
       ></div>
       <ActionBar />
       {
@@ -259,7 +259,7 @@ function ActionBar() {
 
   return(
     <div
-      className="sticky z-10 top-10 flex justify-between"
+      className="sticky z-20 top-10 flex justify-between"
     >
 
       <div
