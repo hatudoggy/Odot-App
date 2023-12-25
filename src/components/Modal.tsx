@@ -9,6 +9,7 @@ import { Dialog } from "@headlessui/react"
 //Modal Components
 import RepoAddModal from "./modals/RepoAddModal"
 import RepoViewItemModal from "./modals/RepoViewItemModal"
+import GptSettingsModal from "./modals/GptSettingsModal"
 
 //DB
 import { RepoItem } from "../localdb/db"
@@ -28,6 +29,8 @@ function Modal() {
         return <RepoAddModal />
       case 'repoView':
         return <RepoViewItemModal item={modalPayload} />
+      case 'gptSettings':
+        return <GptSettingsModal />
       default:
         return <ModalDefault/>
       

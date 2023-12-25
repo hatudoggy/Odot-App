@@ -4,6 +4,7 @@ import navigationSlice from '../features/navigation/navigationSlice'
 import notesSlice from '../features/notes/notesSlice'
 import scheduleSlice from '../features/schedule/scheduleSlice'
 import repoSlice from '../features/repo/repoSlice'
+import gptSlice from '../features/gpt/gptSlice'
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     notes: notesSlice,
     schedule: scheduleSlice,
     repo: repoSlice,
+    gpt: gptSlice,
   },
 })
 
