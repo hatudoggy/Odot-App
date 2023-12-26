@@ -1,7 +1,7 @@
 {
   "name": "odot-app",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
@@ -18,7 +18,9 @@
     "@uidotdev/usehooks": "^2.4.1",
     "@uiw/react-color-colorful": "^2.0.3",
     "dexie": "^3.2.4",
+    "dexie-export-import": "^4.0.7",
     "dexie-react-hooks": "^1.1.7",
+    "downloadjs": "^1.4.7",
     "electron-is-dev": "^2.0.0",
     "framer-motion": "^10.16.16",
     "mdast-util-gfm-task-list-item": "^2.0.0",

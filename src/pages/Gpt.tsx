@@ -138,7 +138,7 @@ function ChatContentArea(){
     () => db.gptChat.toArray()
   )
 
-  console.log(chats)
+  //console.log(chats)
 
   return(
     <div
