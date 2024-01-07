@@ -25,7 +25,7 @@ function createWindow() {
     minWidth: 600,
     minHeight: 600,
     autoHideMenuBar: true,
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC, 'odot-logo.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
