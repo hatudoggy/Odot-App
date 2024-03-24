@@ -7,8 +7,12 @@ import { SingleValue, MultiValue } from "react-select";
 import InlineTextInput from "../InlineTextInput";
 import InlineTextAreaInput from "../InlineTextArea";
 import InlineSelectable, { SelectOption } from "../InlineSelectable";
+import { LabeledInput } from "../../components/modals/RepoAddModal";
 
 //Icons
+import { PiTextTBold } from "react-icons/pi";
+import { RiErrorWarningLine } from "react-icons/ri";
+import { CgCalendarDates } from "react-icons/cg";
 
 //Redux
 import { closeModal } from "../../features/modal/modalSlice";
@@ -20,6 +24,12 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { todoPriority, todoTags } from "../../interface/ITodo";
 
 function TodoAddModal() {
+  const [startDate, setStartDate] = useState<Date>(new Date());
+
+  const [endDate, setEndDate] = useState<Date>(
+    new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
+  );
+
   const dispatch = useDispatch();
 
   const handleAddTodo = (todoItem: TodoItem) => {
@@ -62,10 +72,57 @@ function TodoAddModal() {
     dispatch(closeModal());
   };
 
+  const checkDateValidity = (start: Date, end: Date) => {
+    return start.getTime() > end.getTime()
+      ? "border-b-red-500 border-opacity-70"
+      : "";
+  };
+
   return (
-    <div className="w-screen ">
-      <form onSubmit={handleFormSubmission}>
-        
+    <div className="w-screen p-7 xl:max-w-xl max-w-lg">
+      <form onSubmit={handleFormSubmission} className="flex flex-col gap-5">
+        <LabeledInput
+          className="text-lg"
+          name="todoTitle"
+          icon={<PiTextTBold />}
+          type="line"
+          label="Title"
+        />
+
+        {/* Start and End Date of the To Do */}
+        <section className="grid grid-cols-2 gap-4">
+          <LabeledInput
+            className={`text-lg ${checkDateValidity(startDate, endDate)}`}
+            name="todoStartDate"
+            icon={<CgCalendarDates />}
+            type="calendar"
+            label="Start Date"
+            showTimeSelect
+            onChange={(e) => setStartDate(e)}
+            date={startDate}
+          />
+          <LabeledInput
+            className={`text-lg ${checkDateValidity(startDate, endDate)}`}
+            name="todoEndDate"
+            icon={<CgCalendarDates />}
+            type="calendar"
+            label="End Date"
+            showTimeSelect
+            onChange={(e) => setEndDate(e)}
+            date={endDate}
+          />
+        </section>
+
+        {/* Start and End Date Error */}
+        <span
+          className={
+            "transition-all flex gap-1.5 items-center justify-center bg-red-500 bg-opacity-30 font-semibold p-2 rounded-md shadow-md " +
+            (checkDateValidity(startDate, endDate) !== "" ? "block" : "hidden")
+          }
+        >
+          <RiErrorWarningLine className="w-5 h-5" />
+          Start Date cannot be after End Date
+        </span>
       </form>
     </div>
   );
