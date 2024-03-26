@@ -13,6 +13,7 @@ interface InlineCalendarProps {
 function InlineCalendar(props: InlineCalendarProps) {
   return (
     <Datepicker
+      name={props.name}
       className={`px-2 py-1.5 w-full bg-transparent border-b border-white border-opacity-20 rounded-t transition-colors hover:bg-opacity-5 hover:bg-white focus:outline-none ${props.className}`}
       selected={props.date}
       showTimeSelect={props.showTimeSelect}

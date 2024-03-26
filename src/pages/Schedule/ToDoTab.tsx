@@ -7,6 +7,12 @@ import { dateTimeFormatter } from "../../hooks/reusable code/dateFormatter";
 import { openModal } from "../../features/modal/modalSlice";
 import { useEffect } from "react";
 
+// DB
+import { db, TodoItem } from "../../localdb/db";
+
+// Hooks
+import { useLiveQuery } from "dexie-react-hooks";
+
 function ToDoTab() {
   return (
     <div className="">

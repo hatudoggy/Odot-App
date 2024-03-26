@@ -7,48 +7,7 @@ export interface TodoState {
 }
 
 const initialState: TodoState = {
-  todoList: [
-    {
-      id: 0,
-      title: "1st Todoooooooooooooooooooooooooooooooooooooooooooooooooooooo",
-      startDate: new Date(),
-      endDate: new Date(),
-      tags: ["work"],
-      priority: "low",
-      note: "This is my note",
-      completed: false,
-    },
-    {
-      id: 1,
-      title: "2nd Todo",
-      startDate: new Date(),
-      endDate: new Date(),
-      tags: ["work"],
-      priority: "low",
-      note: "This is my note",
-      completed: false,
-    },
-    {
-      id: 2,
-      title: "3rd Todo",
-      startDate: new Date(),
-      endDate: new Date(),
-      tags: ["work"],
-      priority: "low",
-      note: "This is my note",
-      completed: false,
-    },
-    {
-      id: 3,
-      title: "4th Todo",
-      startDate: new Date(),
-      endDate: new Date(),
-      tags: ["work"],
-      priority: "low",
-      note: "This is my note",
-      completed: false,
-    },
-  ],
+  todoList: [],
   activeTodo: "all",
 };
 
@@ -65,7 +24,7 @@ export const navigationSlice = createSlice({
         tags: action.payload.tags,
         priority: action.payload.priority,
         note: action.payload.note,
-        completed: false,
+        status: action.payload.status,
       });
     },
     changeActiveTodo: (state, action) => {

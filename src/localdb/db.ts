@@ -1,6 +1,6 @@
 import Dexie, { Table } from "dexie";
 import { KeyOfIconList } from "../components/DynamicIcon";
-import { todoTags, todoPriority } from "../interface/ITodo";
+import { todoTags, todoPriority, todoStatus } from "../interface/ITodo";
 
 export interface NoteItem {
   id?: number;
@@ -41,7 +41,7 @@ export interface TodoItem {
   tags?: todoTags[];
   priority: todoPriority;
   note?: string;
-  completed: boolean;
+  status: todoStatus;
 }
 
 export class SubClassedDexie extends Dexie {
@@ -58,7 +58,7 @@ export class SubClassedDexie extends Dexie {
       repo: "++id, title, link, media, *tags, createdAt, updatedAt",
       repoMedia: "++id, label",
       repoTag: "++id, label",
-      todo: "++id, title, startDate, endDate, *tags, priority, note, completed",
+      todo: "++id, title, startDate, endDate, *tags, priority, note, status",
     });
   }
 }

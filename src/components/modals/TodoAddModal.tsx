@@ -21,7 +21,7 @@ import { closeModal } from "../../features/modal/modalSlice";
 import { TodoItem, db } from "../../localdb/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
-import { todoPriority, todoTags } from "../../interface/ITodo";
+import { todoPriority, todoStatus, todoTags } from "../../interface/ITodo";
 
 function TodoAddModal() {
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -29,6 +29,12 @@ function TodoAddModal() {
   const [endDate, setEndDate] = useState<Date>(
     new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
   );
+
+  const [tags, setTags] = useState<SelectOption[]>([]);
+
+  const [priority, setPriority] = useState<SelectOption | null>(null);
+
+  const [status, setStatus] = useState<SelectOption | null>(null);
 
   const dispatch = useDispatch();
 
@@ -40,7 +46,7 @@ function TodoAddModal() {
       tags: todoItem.tags,
       priority: todoItem.priority,
       note: todoItem.note,
-      completed: todoItem.completed,
+      status: todoItem.status,
     });
   };
 
@@ -51,21 +57,20 @@ function TodoAddModal() {
     const todoTitle = formData.get("todoTitle")!.toString();
     const todoStartDate = new Date(formData.get("todoStartDate")!.toString());
     const todoEndDate = new Date(formData.get("todoEndDate")!.toString());
-    const todoTags = [formData.get("todoTags") as todoTags];
-    const todoPriority = formData
-      .get("todoPriority")!
-      .toString() as todoPriority;
+    const todoTags = [formData.get("todoTags")] as todoTags[];
+    const todoPriority = formData.get("todoPriority")!.toString() as todoPriority;
     const todoNote = formData.get("todoNote")?.toString();
-    const todoCompleted = false;
+    const todoStatus =
+      (formData.get("todoStatus")?.toString() as todoStatus) || "not started";
 
     const formPayload: TodoItem = {
-      title: todoTitle,
-      startDate: todoStartDate,
-      endDate: todoEndDate,
+      title: todoTitle || "",
+      startDate: todoStartDate || new Date(),
+      endDate: todoEndDate || new Date(),
       tags: todoTags,
       priority: todoPriority,
-      note: todoNote,
-      completed: todoCompleted,
+      note: todoNote || "",
+      status: todoStatus,
     };
 
     handleAddTodo(formPayload);
@@ -123,6 +128,73 @@ function TodoAddModal() {
           <RiErrorWarningLine className="w-5 h-5" />
           Start Date cannot be after End Date
         </span>
+
+        {/* Priority and Tags */}
+
+        <section className="grid grid-cols-2 gap-4">
+          <LabeledInput
+            className="text-lg"
+            name="todoPriority"
+            icon={<PiTextTBold />}
+            type="select"
+            label="Priority"
+            options={[
+              { value: "low", label: "Low" },
+              { value: "medium", label: "Medium" },
+              { value: "high", label: "High" },
+            ]}
+            onChange={(e) => setPriority(e)}
+            onCreateOption={(createdOption) => {}}
+          />
+          <LabeledInput
+            className="text-lg"
+            name="todoTags"
+            icon={<PiTextTBold />}
+            type="multiple"
+            label="Tags"
+            options={[
+              { value: "work", label: "Work" },
+              { value: "school", label: "School" },
+              { value: "personal", label: "Personal" },
+              { value: "other", label: "Other" },
+            ]}
+            onChange={(e) => e && setTags([...e])}
+            onCreateOption={(createdOption) => {}}
+          />
+        </section>
+        <LabeledInput
+          name="todoStatus"
+          icon={<PiTextTBold />}
+          type="select"
+          label="Status"
+          options={[
+            { value: "completed", label: "Completed" },
+            { value: "in progress", label: "In Progress" },
+            { value: "not started", label: "Not Started" },
+          ]}
+          onChange={(e) => setStatus(e)}
+          onCreateOption={(createdOption) => {}}
+        />
+        <LabeledInput
+          name="todoNote"
+          icon={<PiTextTBold />}
+          type="area"
+          label="Note"
+        />
+        <section className="grid grid-cols-2 gap-2">
+          <button
+            type="submit"
+            className="bg-zinc-500 text-white font-semibold py-2 rounded-md shadow-md hover:bg-zinc-600 transition-colors"
+          >
+            Add To Do
+          </button>
+          <button
+            type="submit"
+            className="text-white font-semibold py-2 rounded-md hover:bg-zinc-600 transition-colors"
+          >
+            Cancel
+          </button>
+        </section>
       </form>
     </div>
   );
