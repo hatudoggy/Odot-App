@@ -10,6 +10,8 @@ import { Dialog } from "@headlessui/react"
 import RepoAddModal from "./modals/RepoAddModal"
 import RepoViewItemModal from "./modals/RepoViewItemModal"
 import GptSettingsModal from "./modals/GptSettingsModal"
+import ImportConfirmModal from "./modals/ImportConfirmModal"
+import ConfirmModal from "./modals/ConfirmModal"
 
 //DB
 import { RepoItem } from "../localdb/db"
@@ -31,6 +33,10 @@ function Modal() {
         return <RepoViewItemModal item={modalPayload} />
       case 'gptSettings':
         return <GptSettingsModal />
+      case 'confirmPopup':
+        return <ConfirmModal item={modalPayload}/>
+      case 'importConfirm':
+        return <ImportConfirmModal />
       default:
         return <ModalDefault/>
       

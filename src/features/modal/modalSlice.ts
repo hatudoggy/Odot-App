@@ -9,6 +9,7 @@ export interface ModalState {
   isModalOpen: boolean
   currentModal: string | null
   modalPayload: any
+  confirmPopup?: boolean | null
 }
 
 interface ModalPayload {
@@ -41,10 +42,14 @@ export const modalSlice = createSlice({
       state.isModalOpen = false
       state.modalPayload = null
       state.currentModal = null
+      state.confirmPopup = null
+    },
+    setConfirmPopup: (state, action: PayloadAction<boolean>) => {
+      state.confirmPopup = action.payload
     }
   }
 })
 
-export const { changeModalState, changeModalContent, openModal, closeModal } = modalSlice.actions
+export const { changeModalState, changeModalContent, openModal, closeModal, setConfirmPopup } = modalSlice.actions
 
 export default modalSlice.reducer
