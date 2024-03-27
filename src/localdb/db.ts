@@ -53,7 +53,7 @@ export class SubClassedDexie extends Dexie {
 
   constructor() {
     super("OdotDB");
-    this.version(7).stores({
+    this.version(9).stores({
       notes: "++id, title, createdAt, updatedAt",
       repo: "++id, title, link, media, *tags, createdAt, updatedAt",
       repoMedia: "++id, label",
