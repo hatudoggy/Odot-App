@@ -10,6 +10,7 @@ import { Dialog } from "@headlessui/react";
 import RepoAddModal from "./modals/RepoAddModal";
 import TodoAddModal from "./modals/TodoAddModal";
 import RepoViewItemModal from "./modals/RepoViewItemModal";
+import DeleteModal from "./modals/DeleteModal";
 
 //DB
 import { RepoItem } from "../localdb/db";
@@ -30,6 +31,8 @@ function Modal() {
         return <RepoViewItemModal item={modalPayload} />;
       case "todoAdd":
         return <TodoAddModal />;
+      case "todoDelete":
+        return <DeleteModal itemsToDelete={modalPayload} />;
       default:
         return <ModalDefault />;
     }
