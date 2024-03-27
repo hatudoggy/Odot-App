@@ -118,27 +118,29 @@ function ToDoContainer() {
 
 function ToDoCard() {
   const todoState = useSelector((state: RootState) => state.todo);
+  const todoQuery = useLiveQuery(() => db.todo.toArray(), [todoState]);
   const dispatch = useDispatch();
 
   return (
     <>
-      {todoState.todoList.map((todo, index) => (
-        <div
-          className="py-3 px-5 w-full rounded-xl flex items-center gap-3 md:flex-[0_1_49%] lg:flex-[0_1_32%] xl:flex-[0_1_24%] truncate"
-          style={{ backgroundColor: "rgba(100, 125, 126, 0.25)" }}
-          key={index + todo.title}
-        >
-          <input type="checkbox" className="w-4 h-4" />
-          <section className="px-1.5 truncate w-[90%]">
-            <h1 className="text-lg font-semibold truncate max-w-[48vw]">
-              {todo.title}
-            </h1>
-            <h5 className="truncate max-w-[48vw]">
-              {dateTimeFormatter(todo.startDate)}
-            </h5>
-          </section>
-        </div>
-      ))}
+      {todoQuery &&
+        todoQuery.map((todo, index) => (
+          <div
+            className="py-3 px-5 w-full rounded-xl flex items-center gap-3 md:flex-[0_1_49%] lg:flex-[0_1_32%] xl:flex-[0_1_24%] truncate"
+            style={{ backgroundColor: "rgba(100, 125, 126, 0.25)" }}
+            key={index + todo.title}
+          >
+            <input type="checkbox" className="w-4 h-4" />
+            <section className="px-1.5 truncate w-[90%]">
+              <h1 className="text-lg font-semibold truncate max-w-[48vw]">
+                {todo.title}
+              </h1>
+              <h5 className="truncate max-w-[48vw]">
+                {dateTimeFormatter(todo.startDate)}
+              </h5>
+            </section>
+          </div>
+        ))}
     </>
   );
 }
