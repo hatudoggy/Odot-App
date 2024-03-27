@@ -58,18 +58,20 @@ function TodoAddModal() {
     const todoStartDate = new Date(formData.get("todoStartDate")!.toString());
     const todoEndDate = new Date(formData.get("todoEndDate")!.toString());
     const todoTags = [formData.get("todoTags")] as todoTags[];
-    const todoPriority = formData.get("todoPriority")!.toString() as todoPriority;
+    const todoPriority = formData
+      .get("todoPriority")!
+      .toString() as todoPriority;
     const todoNote = formData.get("todoNote")?.toString();
     const todoStatus =
       (formData.get("todoStatus")?.toString() as todoStatus) || "not started";
 
     const formPayload: TodoItem = {
-      title: todoTitle || "",
-      startDate: todoStartDate || new Date(),
-      endDate: todoEndDate || new Date(),
+      title: todoTitle,
+      startDate: todoStartDate,
+      endDate: todoEndDate,
       tags: todoTags,
       priority: todoPriority,
-      note: todoNote || "",
+      note: todoNote,
       status: todoStatus,
     };
 
@@ -189,7 +191,7 @@ function TodoAddModal() {
             Add To Do
           </button>
           <button
-            type="submit"
+            onClick={() => dispatch(closeModal())}
             className="text-white font-semibold py-2 rounded-md hover:bg-zinc-600 transition-colors"
           >
             Cancel
