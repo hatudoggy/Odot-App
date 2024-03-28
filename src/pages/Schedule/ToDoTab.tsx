@@ -180,15 +180,15 @@ function ToDoCard() {
     };
 
     if (e.currentTarget.checked) {
-      dispatch(addSelectedTodo({ serializedTodo }));
+      dispatch(addSelectedTodo(serializedTodo));
       return;
     }
 
     // If the selected todo is unchecked, remove it from the selected todo list
-    dispatch(deleteSelectedTodo({ serializedTodo }));
+    dispatch(deleteSelectedTodo(serializedTodo));
   };
 
-  // console.log(todoState.selectedTodo);
+  console.log(todoState.selectedTodo);
 
   return (
     <>
