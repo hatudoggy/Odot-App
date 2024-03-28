@@ -17,7 +17,6 @@ function InlineTextInput({name, type, className, placeholder, defaultValue, valu
       type={type}
       className={`px-2 py-1.5 bg-transparent border-b border-white border-opacity-20 rounded-t transition-colors hover:bg-opacity-5 hover:bg-white focus:outline-none ${className}`}
       placeholder={placeholder}
-      defaultValue={defaultValue}
       value={value}
       onChange={onChange}
     />
