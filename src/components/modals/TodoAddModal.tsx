@@ -24,6 +24,7 @@ import {
   addStartDate,
   addStatus,
   addTags,
+  resetToAddTodo,
 } from "../../features/todo/todoSlice";
 import { RootState } from "../../app/store";
 
@@ -44,6 +45,9 @@ function TodoAddModal() {
     (state: RootState) => state.todo.toAddTodo
   );
 
+  // Checks if the form has been attempted to be submitted
+  const [triedSubmit, setTriedSubmit] = useState(false);
+
   const handleAddTodo = (todoItem: TodoItem) => {
     db.todo.add({
       title: todoItem.title,
@@ -59,6 +63,18 @@ function TodoAddModal() {
   const handleFormSubmission = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+
+    // Check if the required fields are filled
+    if (
+      !formData.get("todoTitle") ||
+      !formData.get("todoStartDate") ||
+      !formData.get("todoEndDate") ||
+      !formData.get("todoPriority") ||
+      !formData.get("todoStatus")
+    ) {
+      setTriedSubmit(true);
+      return;
+    }
 
     const todoTitle = formData.get("todoTitle")!.toString();
     const todoStartDate = new Date(formData.get("todoStartDate")!.toString());
@@ -85,6 +101,13 @@ function TodoAddModal() {
     dispatch(closeModal());
   };
 
+  /**
+   * Checks if the start date is after the end date
+   *
+   * @param start Start Date of the To Do
+   * @param end End Date of the To Do
+   * @returns "border-b-red-500 border-opacity-70" if the start date is after the end date, else ""
+   * */
   const checkDateValidity = (
     start: ITodoItem["startDate"],
     end: ITodoItem["endDate"]
@@ -94,11 +117,21 @@ function TodoAddModal() {
       : "";
   };
 
+  /**
+   * Checks if the field is empty
+   *
+   * @param field Field to check
+   * @returns "border-b-red-500 border-opacity-70" if the field is empty, else ""
+   * */
+  const checkFieldValidity = (field: any) => {
+    return triedSubmit && !field ? "border-b-red-500 border-opacity-70" : "";
+  };
+
   return (
     <div className="w-screen p-7 xl:max-w-xl max-w-lg">
       <form onSubmit={handleFormSubmission} className="flex flex-col gap-5">
         <LabeledInput
-          className="text-lg"
+          className={`text-lg ` + checkFieldValidity(toAddTodoState.title)}
           name="todoTitle"
           icon={<PiTextTBold />}
           type="line"
@@ -157,7 +190,7 @@ function TodoAddModal() {
 
         <section className="grid grid-cols-2 gap-4">
           <LabeledInput
-            className="text-lg"
+            className={checkFieldValidity(toAddTodoState.priority)}
             name="todoPriority"
             icon={<PiTextTBold />}
             type="select"
@@ -181,7 +214,7 @@ function TodoAddModal() {
             onCreateOption={(createdOption) => {}}
           />
           <LabeledInput
-            className="text-lg"
+            className={`text-lg ` + checkFieldValidity(toAddTodoState.tags)}
             name="todoTags"
             icon={<PiTextTBold />}
             type="multiple"
@@ -209,6 +242,7 @@ function TodoAddModal() {
           />
         </section>
         <LabeledInput
+          className={checkFieldValidity(toAddTodoState.title)}
           name="todoStatus"
           icon={<PiTextTBold />}
           type="select"
@@ -249,6 +283,7 @@ function TodoAddModal() {
           <button
             onClick={() => {
               dispatch(closeModal());
+              dispatch(resetToAddTodo());
             }}
             className="text-white font-semibold py-2 rounded-md hover:bg-zinc-600 transition-colors"
           >

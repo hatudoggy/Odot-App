@@ -30,6 +30,7 @@ export const navigationSlice = createSlice({
   name: "todo",
   initialState,
   reducers: {
+    // Add Todo
     addTodo: (state, action) => {
       state.todoList.push({
         id: state.todoList.length,
@@ -64,7 +65,11 @@ export const navigationSlice = createSlice({
     addStatus: (state, action) => {
       state.toAddTodo.status = action.payload;
     },
+    resetToAddTodo: (state) => {
+      state.toAddTodo = initialToAddTodo;
+    },
 
+    // Selected Todo
     addSelectedTodo: (state, action) => {
       state.selectedTodo.push(action.payload);
     },
@@ -73,6 +78,8 @@ export const navigationSlice = createSlice({
         (item) => item.id !== action.payload.id
       );
     },
+
+    // Active Todo Tab
     changeActiveTodo: (state, action) => {
       state.activeTodo = action.payload;
     },
@@ -90,6 +97,7 @@ export const {
   addNote,
   addStatus,
   addTags,
+  resetToAddTodo,
 } = navigationSlice.actions;
 
 export default navigationSlice.reducer;

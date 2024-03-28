@@ -188,7 +188,7 @@ function ToDoCard() {
     dispatch(deleteSelectedTodo(serializedTodo));
   };
 
-  console.log(todoState.selectedTodo);
+  // console.log(todoState.selectedTodo);
 
   return (
     <>
