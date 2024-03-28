@@ -96,8 +96,10 @@ function ToDoFilters() {
       return;
     }
 
-    if (todoState.selectedTodo.length === 0 && attribute === "css")
-      return "opacity-60 cursor-not-allowed";
+    if (attribute === "css")
+      return todoState.selectedTodo.length === 0
+        ? "opacity-60 cursor-not-allowed"
+        : "cursor-pointer";
   };
 
   return (
@@ -133,7 +135,7 @@ function ToDoFilters() {
       <span className="ml-auto flex gap-2">
         <MdDelete
           className={
-            `transition-all ml-auto bg-red-500 bg-opacity-70 px-1 rounded-md h-8 w-8 font-medium cursor-pointer ` +
+            `transition-all ml-auto bg-red-500 bg-opacity-70 px-1 rounded-md h-8 w-8 font-medium ` +
             checkedItemsPresent("css")
           }
           onClick={() => checkedItemsPresent("onclick")}
