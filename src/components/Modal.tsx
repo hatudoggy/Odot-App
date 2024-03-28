@@ -1,43 +1,47 @@
 //Hooks
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "../app/store"
-import { changeModalState, closeModal } from "../features/modal/modalSlice"
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
+import { changeModalState, closeModal } from "../features/modal/modalSlice";
 
 //Headless
-import { Dialog } from "@headlessui/react"
+import { Dialog } from "@headlessui/react";
 
 //Modal Components
-import RepoAddModal from "./modals/RepoAddModal"
-import RepoViewItemModal from "./modals/RepoViewItemModal"
+import RepoAddModal from "./modals/RepoAddModal";
+import TodoAddModal from "./modals/TodoAddModal";
+import RepoViewItemModal from "./modals/RepoViewItemModal";
+import DeleteModal from "./modals/DeleteModal";
 
 //DB
-import { RepoItem } from "../localdb/db"
-
+import { RepoItem } from "../localdb/db";
 
 //type ModalType = 'repoAdd' | 'repoView' | null
 
-
-
 function Modal() {
-  const {isModalOpen, currentModal, modalPayload} = useSelector((state: RootState) => state.modal)
-  const dispatch = useDispatch()
+  const { isModalOpen, currentModal, modalPayload } = useSelector(
+    (state: RootState) => state.modal
+  );
+  const dispatch = useDispatch();
 
   const modalSwitcher = (modal: string | null) => {
-    switch(modal){
-      case 'repoAdd':
-        return <RepoAddModal />
-      case 'repoView':
-        return <RepoViewItemModal item={modalPayload} />
+    switch (modal) {
+      case "repoAdd":
+        return <RepoAddModal />;
+      case "repoView":
+        return <RepoViewItemModal item={modalPayload} />;
+      case "todoAdd":
+        return <TodoAddModal />;
+      case "todoDelete":
+        return <DeleteModal itemsToDelete={modalPayload} />;
       default:
-        return <ModalDefault/>
-      
+        return <ModalDefault />;
     }
-  }
+  };
 
   return (
-    <Dialog 
-      open={isModalOpen} 
-      onClose={()=>dispatch(closeModal())} 
+    <Dialog
+      open={isModalOpen}
+      onClose={() => dispatch(closeModal())}
       className="relative z-50"
     >
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -48,8 +52,7 @@ function Modal() {
         </Dialog.Panel>
       </div>
     </Dialog>
-
-  )
+  );
 }
 
 // isModalOpen &&
@@ -68,14 +71,8 @@ function Modal() {
 //   ></div>
 // </div>
 
-
 function ModalDefault() {
-
-  return(
-    <div>
-
-    </div>
-  )
+  return <div></div>;
 }
-  
-export default Modal
+
+export default Modal;
