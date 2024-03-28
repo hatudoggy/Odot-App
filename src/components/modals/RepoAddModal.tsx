@@ -214,6 +214,9 @@ interface LabeledInputBase {
 interface LabeledInputText extends LabeledInputBase {
   type: "line" | "area";
   value?: string;
+  onChange?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }
 
 interface LabeledInputSelect extends LabeledInputBase {
@@ -236,7 +239,7 @@ interface LabeledInputMultiple extends LabeledInputBase {
 
 interface LabeledInputCalendar extends LabeledInputBase {
   type: "calendar";
-  date: Date;
+  date: Date | number;
   showTimeSelect?: boolean;
   onChange: (date: Date) => void;
 }
@@ -252,6 +255,8 @@ export function LabeledInput(props: LabeledInputProps) {
             className={`${props.className}`}
             placeholder={props.placeholder}
             defaultValue={props.value}
+            value={props.value}
+            onChange={props.onChange}
           />
         );
       case "area":
@@ -261,7 +266,8 @@ export function LabeledInput(props: LabeledInputProps) {
             className={`${props.className}`}
             placeholder={props.placeholder}
             rows={3}
-            defaultValue={props.value}
+            value={props.value}
+            onChange={props.onChange}
           />
         );
       case "select":
