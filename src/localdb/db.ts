@@ -36,12 +36,12 @@ export interface RepoTag {
 export interface TodoItem {
   id?: number;
   title: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | number;
+  endDate: Date | number;
   tags?: todoTags[];
-  priority: todoPriority;
+  priority?: todoPriority;
   note?: string;
-  status: todoStatus;
+  status?: todoStatus;
 }
 
 export class SubClassedDexie extends Dexie {
@@ -53,7 +53,7 @@ export class SubClassedDexie extends Dexie {
 
   constructor() {
     super("OdotDB");
-    this.version(9).stores({
+    this.version(10).stores({
       notes: "++id, title, createdAt, updatedAt",
       repo: "++id, title, link, media, *tags, createdAt, updatedAt",
       repoMedia: "++id, label",

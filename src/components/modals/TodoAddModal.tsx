@@ -1,5 +1,5 @@
 //Hooks
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ReactNode, FormEvent, useState } from "react";
 import { SingleValue, MultiValue } from "react-select";
 
@@ -16,27 +16,33 @@ import { CgCalendarDates } from "react-icons/cg";
 
 //Redux
 import { closeModal } from "../../features/modal/modalSlice";
+import {
+  addTitle,
+  addEndDate,
+  addNote,
+  addPriority,
+  addStartDate,
+  addStatus,
+  addTags,
+} from "../../features/todo/todoSlice";
+import { RootState } from "../../app/store";
 
 //DB
 import { TodoItem, db } from "../../localdb/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
-import { todoPriority, todoStatus, todoTags } from "../../interface/ITodo";
+import {
+  todoPriority,
+  todoStatus,
+  todoTags,
+  TodoItem as ITodoItem,
+} from "../../interface/ITodo";
 
 function TodoAddModal() {
-  const [startDate, setStartDate] = useState<Date>(new Date());
-
-  const [endDate, setEndDate] = useState<Date>(
-    new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
-  );
-
-  const [tags, setTags] = useState<SelectOption[]>([]);
-
-  const [priority, setPriority] = useState<SelectOption | null>(null);
-
-  const [status, setStatus] = useState<SelectOption | null>(null);
-
   const dispatch = useDispatch();
+  const toAddTodoState = useSelector(
+    (state: RootState) => state.todo.toAddTodo
+  );
 
   const handleAddTodo = (todoItem: TodoItem) => {
     db.todo.add({
@@ -71,7 +77,7 @@ function TodoAddModal() {
       endDate: todoEndDate,
       tags: todoTags,
       priority: todoPriority,
-      note: todoNote,
+      note: todoNote || "",
       status: todoStatus,
     };
 
@@ -79,8 +85,11 @@ function TodoAddModal() {
     dispatch(closeModal());
   };
 
-  const checkDateValidity = (start: Date, end: Date) => {
-    return start.getTime() > end.getTime()
+  const checkDateValidity = (
+    start: ITodoItem["startDate"],
+    end: ITodoItem["endDate"]
+  ) => {
+    return new Date(start).getTime() > new Date(end).getTime()
       ? "border-b-red-500 border-opacity-70"
       : "";
   };
@@ -94,29 +103,37 @@ function TodoAddModal() {
           icon={<PiTextTBold />}
           type="line"
           label="Title"
+          value={toAddTodoState.title}
+          onChange={(e) => dispatch(addTitle(e.target.value))}
         />
 
         {/* Start and End Date of the To Do */}
         <section className="grid grid-cols-2 gap-4">
           <LabeledInput
-            className={`text-lg ${checkDateValidity(startDate, endDate)}`}
+            className={`text-lg ${checkDateValidity(
+              toAddTodoState?.startDate,
+              toAddTodoState?.endDate
+            )}`}
             name="todoStartDate"
             icon={<CgCalendarDates />}
             type="calendar"
             label="Start Date"
             showTimeSelect
-            onChange={(e) => setStartDate(e)}
-            date={startDate}
+            onChange={(e) => dispatch(addStartDate(e.getTime()))} // Serialize before dispatching
+            date={toAddTodoState.startDate}
           />
           <LabeledInput
-            className={`text-lg ${checkDateValidity(startDate, endDate)}`}
+            className={`text-lg ${checkDateValidity(
+              toAddTodoState?.startDate,
+              toAddTodoState?.endDate
+            )}`}
             name="todoEndDate"
             icon={<CgCalendarDates />}
             type="calendar"
             label="End Date"
             showTimeSelect
-            onChange={(e) => setEndDate(e)}
-            date={endDate}
+            onChange={(e) => dispatch(addEndDate(e.getTime()))} // Serialize before dispatching
+            date={toAddTodoState.endDate}
           />
         </section>
 
@@ -124,7 +141,12 @@ function TodoAddModal() {
         <span
           className={
             "transition-all flex gap-1.5 items-center justify-center bg-red-500 bg-opacity-30 font-semibold p-2 rounded-md shadow-md " +
-            (checkDateValidity(startDate, endDate) !== "" ? "block" : "hidden")
+            (checkDateValidity(
+              toAddTodoState.startDate,
+              toAddTodoState.endDate
+            ) !== ""
+              ? "block"
+              : "hidden")
           }
         >
           <RiErrorWarningLine className="w-5 h-5" />
@@ -145,7 +167,17 @@ function TodoAddModal() {
               { value: "medium", label: "Medium" },
               { value: "high", label: "High" },
             ]}
-            onChange={(e) => setPriority(e)}
+            value={
+              toAddTodoState?.priority
+                ? {
+                    value: toAddTodoState?.priority,
+                    label:
+                      toAddTodoState?.priority[0]?.toUpperCase() +
+                      toAddTodoState?.priority?.slice(1),
+                  }
+                : undefined
+            }
+            onChange={(e) => dispatch(addPriority(e?.value))}
             onCreateOption={(createdOption) => {}}
           />
           <LabeledInput
@@ -160,7 +192,19 @@ function TodoAddModal() {
               { value: "personal", label: "Personal" },
               { value: "other", label: "Other" },
             ]}
-            onChange={(e) => e && setTags([...e])}
+            value={
+              toAddTodoState?.tags
+                ? toAddTodoState.tags.map((tag) => {
+                    return {
+                      value: tag,
+                      label: tag[0].toUpperCase() + tag.slice(1),
+                    };
+                  })
+                : undefined
+            }
+            onChange={(e) =>
+              e && dispatch(addTags([...e?.map((tag) => tag.value)]))
+            }
             onCreateOption={(createdOption) => {}}
           />
         </section>
@@ -174,7 +218,17 @@ function TodoAddModal() {
             { value: "in progress", label: "In Progress" },
             { value: "not started", label: "Not Started" },
           ]}
-          onChange={(e) => setStatus(e)}
+          value={
+            toAddTodoState?.status
+              ? {
+                  value: toAddTodoState.status,
+                  label:
+                    toAddTodoState.status[0].toUpperCase() +
+                    toAddTodoState.status.slice(1),
+                }
+              : undefined
+          }
+          onChange={(e) => dispatch(addStatus(e?.value))}
           onCreateOption={(createdOption) => {}}
         />
         <LabeledInput
@@ -182,6 +236,8 @@ function TodoAddModal() {
           icon={<PiTextTBold />}
           type="area"
           label="Note"
+          value={toAddTodoState.note}
+          onChange={(e) => dispatch(addNote(e.target.value))}
         />
         <section className="grid grid-cols-2 gap-2">
           <button
@@ -191,7 +247,9 @@ function TodoAddModal() {
             Add To Do
           </button>
           <button
-            onClick={() => dispatch(closeModal())}
+            onClick={() => {
+              dispatch(closeModal());
+            }}
             className="text-white font-semibold py-2 rounded-md hover:bg-zinc-600 transition-colors"
           >
             Cancel

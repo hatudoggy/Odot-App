@@ -1,12 +1,12 @@
 export interface TodoItem {
   id: number;
   title: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | number;
+  endDate: Date | number;
   tags: todoTags[];
-  priority: todoPriority;
+  priority?: todoPriority;
   note: string;
-  status: todoStatus;
+  status?: todoStatus;
 }
 
 export type todoFilters = "all" | "day" | "week" | "month" | "notDue";

@@ -171,8 +171,8 @@ function ToDoCard() {
     const serializedTodo = {
       id: todo?.id,
       title: todo?.title,
-      startDate: todo?.startDate.toISOString(), // Fixes the non-serializable error
-      endDate: todo?.endDate.toISOString(),
+      startDate: new Date(todo.startDate).getTime(),
+      endDate: new Date(todo.endDate).getTime(),
       tags: todo?.tags,
       priority: todo?.priority,
       note: todo?.note,
@@ -209,7 +209,7 @@ function ToDoCard() {
                 {todo.title}
               </h1>
               <h5 className="truncate max-w-[48vw]">
-                {dateTimeFormatter(todo.startDate)}
+                {dateTimeFormatter(new Date(todo.startDate))}
               </h5>
             </section>
           </div>
